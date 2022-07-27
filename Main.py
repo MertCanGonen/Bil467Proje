@@ -6,7 +6,7 @@ import math
 
 
 #Reading the all images
-bw = cv.imread("bw1.jpg")
+bw = cv.imread("bw.jpg")
 rgb = cv.imread("rgb1.jpg")
 
 def boxFilter(image, kernel, border):
@@ -42,7 +42,7 @@ def boxFilter(image, kernel, border):
     cv.waitKey()
         
 """
-boxFilter(bw, 3, "0")
+boxFilter(rgb, 3, "0")
 boxFilter(bw, 3, "M")
 boxFilter(bw, 11, "0")
 boxFilter(bw, 11, "M")
@@ -91,10 +91,12 @@ def gaussianBlur(image, kernel, sigma, border):
                     tmp3 = tmp3 + img[x][y][2] * arr[x-top][y-left]
             pixel = [tmp1, tmp2, tmp3]
             output[i-k][j-k] = pixel
+    cv.imshow("1", output)
+    cv.waitKey(0)
     return output
     
 """
-gaussianBlur(bw, 3, 1, "0")
+gaussianBlur(rgb, 3, 1, "0")
 gaussianBlur(bw, 11, 1, "M")
 gaussianBlur(bw, 5, 0, "0")
 gaussianBlur(bw, 5, 0, "M")
@@ -132,7 +134,7 @@ def medianFilter(image, kernel, border):
     cv.waitKey()
 
 """
-medianFilter(bw, 11, "0")
+medianFilter(rgb, 11, "0")
 medianFilter(bw, 11, "0")
 medianFilter(bw, 3, "M")
 medianFilter(bw, 11, "M")
@@ -147,7 +149,7 @@ medianFilter(bw, 11, "M")
 
 
 
-#Same operations with Opencv methods 
+                                                                #SAME OPERATIONS WITH OPENCV METHODS# 
 
 """
                                                                     #CREATING ALL BLURRED IMAGES
