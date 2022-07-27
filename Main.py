@@ -7,7 +7,7 @@ import math
 
 #Reading the all images
 bw = cv.imread("bw.jpg")
-rgb = cv.imread("rgb1.jpg")
+rgb = cv.imread("rgb.jpg")
 
 def boxFilter(image, kernel, border):
     img = image
@@ -95,8 +95,8 @@ def gaussianBlur(image, kernel, sigma, border):
     cv.waitKey(0)
     return output
     
-"""
 gaussianBlur(rgb, 3, 1, "0")
+"""
 gaussianBlur(bw, 11, 1, "M")
 gaussianBlur(bw, 5, 0, "0")
 gaussianBlur(bw, 5, 0, "M")
