@@ -1,5 +1,7 @@
-BIL 467 - Image Processing / Final Project
-
+BIL 467 - Image Processing / Final Project<br/>
+Mert Can Gönen<br/>
+181101039<br/>
+<br/>
 # Box filter filtering
 
 # Gaussian filtering
