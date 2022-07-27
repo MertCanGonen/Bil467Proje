@@ -7,9 +7,9 @@ BIL 467 - Image Processing / Final Project
 # Median filtering
 
 # Blurring
-1) Blur uygula
-    a)Box filter
-    b)Gaussian filter
+1) Blur uygula<br/>
+    a)Box filter<br/>
+    b)Gaussian filter<br/>
     c)Median filter
 
 # Create Mask
@@ -19,10 +19,10 @@ BIL 467 - Image Processing / Final Project
 3) Result = original + mask
 
 # Image sharpening and highboost filtering
-g(x,y) = mask
-f(x,y) = original image
-f'(x,y) = blurred image
-output = f(x,y) + k[mask]
-
-if k=1; unsharp masking
+g(x,y) = mask<br/>
+f(x,y) = original image<br/>
+f'(x,y) = blurred image<br/>
+output = f(x,y) + k[mask]<br/>
+<br/>
+if k=1; unsharp masking<br/>
 if k>1; highboost filtering
