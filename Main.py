@@ -38,21 +38,8 @@ def boxFilter(image, kernel, border):
             tmp3 = int(tmp3 / kernel**2)
             pixel = [tmp1, tmp2, tmp3]
             output[i-k][j-k] = pixel
-    cv.imshow("Output", output)
-    cv.waitKey()
+    return output
         
-"""
-boxFilter(rgb, 3, "0")
-boxFilter(bw, 3, "M")
-boxFilter(bw, 11, "0")
-boxFilter(bw, 11, "M")
-
-boxFilter(rgb, 3, "0")
-boxFilter(rgb, 3, "M")
-boxFilter(rgb, 11, "0")
-boxFilter(rgb, 11, "M")
-"""
-
 def gaussianBlur(image, kernel, sigma, border):
     arr = np.zeros((kernel, kernel))
     center = (kernel - 1) / 2
@@ -63,7 +50,6 @@ def gaussianBlur(image, kernel, sigma, border):
             v = math.exp(-(r / ( 2 * (sigma**2) )))
             arr[i][j] = v
             value = value + v
-    print(arr)
     for i in range(kernel):
         for j in range(kernel):
             arr[i][j] = arr[i][j] / value
@@ -91,17 +77,8 @@ def gaussianBlur(image, kernel, sigma, border):
                     tmp3 = tmp3 + img[x][y][2] * arr[x-top][y-left]
             pixel = [tmp1, tmp2, tmp3]
             output[i-k][j-k] = pixel
-    cv.imshow("1", output)
-    cv.waitKey(0)
     return output
     
-gaussianBlur(rgb, 3, 1, "0")
-"""
-gaussianBlur(bw, 11, 1, "M")
-gaussianBlur(bw, 5, 0, "0")
-gaussianBlur(bw, 5, 0, "M")
-"""           
-
 def medianFilter(image, kernel, border):
     img = image
     (h, w) = image.shape[:2]
@@ -130,22 +107,84 @@ def medianFilter(image, kernel, border):
             m3 = median(l3)
             pixel = [m1, m2, m3]
             output[i-k][j-k] = pixel
-    cv.imshow("Output", output)
-    cv.waitKey()
+    return output
+
+def createMask(image, blur):
+    result = image - blur
+    return result
+
+def output(image, blurredImage, k):
+    mask = createMask(image, blurredImage)
+    cv.imshow("Mask", mask)
+    output = image + (k * mask)
+    if (k > 1):
+        o = image + mask
+        cv.imshow("Unsharp Masking", o)
+        cv.imshow("High Boost Filtering", output)
+    else:
+        cv.imshow("Unsharp Masking", output)
+    cv.waitKey(0)
+    print()
+
+#Example for output
+"""
+bwBoxW3k0p = boxFilter(bw, 3, "0")
+output(bw, bwBoxW3k0p, 1)
+"""
+
+#Blurred images
 
 """
-medianFilter(rgb, 11, "0")
-medianFilter(bw, 11, "0")
-medianFilter(bw, 3, "M")
-medianFilter(bw, 11, "M")
+#Masks created by using box filter
+ 
+bwBoxW3k0p = boxFilter(bw, 3, "0")
 
-medianFilter(bw, 3, "0")
-medianFilter(bw, 3, "M")
-medianFilter(bw, 11, "0")
-medianFilter(bw, 11, "M")
+bwBoxW3kMp = boxFilter(bw, 3, "M")
+
+rgbBoxW3k0p = boxFilter(rgb, 3, "0")
+
+rgbBoxW3kMp = boxFilter(rgb, 3, "M")
+
+bwBoxW5k0p = boxFilter(bw, 5, "0")
+
+rgbBoxW5k0p = boxFilter(rgb, 5, "0")
+
+#################################################################
+#Masks created by using gaussian
+
+bwGausW3k0ps1 = gaussianBlur(bw, 3, 1, "0")
+
+bwGausW3kMps1 = gaussianBlur(bw, 3, 1, "M")
+
+rgbGausW3k0ps1 = gaussianBlur(rgb, 3, 1, "0")
+
+rgbGausW3kMps1 = gaussianBlur(rgb, 3, 1, "M")
+
+bwGausW5k0ps1 = gaussianBlur(bw, 5, 1, "0")
+
+rgbGausW5k0ps1 = gaussianBlur(rgb, 5, 1, "0")
+
+bwGausW5k0ps02 = gaussianBlur(bw, 5, 0.2, "0")
+
+rgbGausW5k0ps02 = gaussianBlur(rgb, 5, 0.2, "0")
+
+###################################################################
+#Masks created by using median filter
+
+bwMedianW3k0p = medianFilter(bw, 5, "0")
+
+bwMedianW3kMp = medianFilter(bw, 5, "M")
+
+rgbMedianW5k0p = medianFilter(rgb, 5, "0")
+
+rgbMedianW5kMp = medianFilter(rgb, 5, "M")
+
+bwMedianW11k0p = medianFilter(bw, 11, "0")
+
+rgbMedianW11k0p = medianFilter(rgb, 11, "0")
+
+#############################################################
 """
-
-
 
 
 
@@ -202,80 +241,80 @@ rgb_m1 = cv.medianBlur(rgb, 3)
 rgb_m2 = cv.medianBlur(rgb, 11)
 
         #MASKS FOR B&W IMAGE
-mask1_bw = bw - bw_pad0_bf1
-mask2_bw = bw - bw_pad0_bf2
-mask3_bw = bw - bw_pad0_bf3
-mask4_bw = bw - bw_padM_bf1
-mask5_bw = bw - bw_padM_bf2
-mask6_bw = bw - bw_padM_bf3
+mask1_bw = createMask(bw, bw_pad0_bf1)
+mask2_bw = createMask(bw, bw_pad0_bf2)
+mask3_bw = createMask(bw, bw_pad0_bf3)
+mask4_bw = createMask(bw, bw_padM_bf1)
+mask5_bw = createMask(bw, bw_padM_bf2)
+mask6_bw = createMask(bw, bw_padM_bf3)
 
-mask7_bw = bw - bw_pad0_g1_1
-mask8_bw = bw - bw_pad0_g1_2
-mask9_bw = bw - bw_pad0_g2_1
-mask10_bw = bw - bw_pad0_g2_2
-mask11_bw = bw - bw_padM_g1_1
-mask12_bw = bw - bw_padM_g1_2
-mask13_bw = bw - bw_padM_g2_1
-mask14_bw = bw - bw_padM_g2_2
+mask7_bw = createMask(bw, bw_pad0_g1_1)
+mask8_bw = createMask(bw, bw_pad0_g1_2)
+mask9_bw = createMask(bw, bw_pad0_g2_1)
+mask10_bw = createMask(bw, bw_pad0_g2_2)
+mask11_bw = createMask(bw, bw_padM_g1_1)
+mask12_bw = createMask(bw, bw_padM_g1_2)
+mask13_bw = createMask(bw, bw_padM_g2_1)
+mask14_bw = createMask(bw, bw_padM_g2_2)
 
-mask15_bw = bw - bw_m1
-mask16_bw = bw - bw_m2
+mask15_bw = createMask(bw, bw_m1)
+mask16_bw = createMask(bw, bw_m2)
 
         #MASKS FOR RGB IMAGE
-mask1_rgb = rgb - rgb_pad0_bf1
-mask2_rgb = rgb - rgb_pad0_bf2
-mask3_rgb = rgb - rgb_pad0_bf3
-mask4_rgb = rgb - rgb_padM_bf1
-mask5_rgb = rgb - rgb_padM_bf2
-mask6_rgb = rgb - rgb_padM_bf3
+mask1_rgb = createMask(rgb, rgb_pad0_bf1)
+mask2_rgb = createMask(rgb, rgb_pad0_bf2)
+mask3_rgb = createMask(rgb, rgb_pad0_bf3)
+mask4_rgb = createMask(rgb, rgb_padM_bf1)
+mask5_rgb = createMask(rgb, rgb_padM_bf2)
+mask6_rgb = createMask(rgb, rgb_padM_bf3)
 
-mask7_rgb = rgb - rgb_pad0_g1_1
-mask8_rgb = rgb - rgb_pad0_g1_2
-mask9_rgb = rgb - rgb_pad0_g2_1
-mask10_rgb = rgb - rgb_pad0_g2_2
-mask11_rgb = rgb - rgb_padM_g1_1
-mask12_rgb = rgb - rgb_padM_g1_2
-mask13_rgb = rgb - rgb_padM_g2_1
-mask14_rgb = rgb - rgb_padM_g2_2
+mask7_rgb = createMask(rgb, rgb_pad0_g1_1)
+mask8_rgb = createMask(rgb, rgb_pad0_g1_2)
+mask9_rgb = createMask(rgb, rgb_pad0_g2_1)
+mask10_rgb = createMask(rgb, rgb_pad0_g2_2)
+mask11_rgb = createMask(rgb, rgb_padM_g1_1)
+mask12_rgb = createMask(rgb, rgb_padM_g1_2)
+mask13_rgb = createMask(rgb, rgb_padM_g2_1)
+mask14_rgb = createMask(rgb, rgb_padM_g2_2)
 
-mask15_rgb = rgb - rgb_m1
-mask16_rgb = rgb - rgb_m2
+mask15_rgb = createMask(rgb, rgb_m1)
+mask16_rgb = createMask(rgb, rgb_m2)
 
         #OUTPUT FOR B&W IMAGES
-output1 = bw + mask1_bw
-output2 = bw + mask2_bw
-output3 = bw + mask3_bw
-output4 = bw + mask4_bw
-output5 = bw + mask5_bw
-output6 = bw + mask6_bw
-output7 = bw + mask7_bw
-output8 = bw + mask8_bw
-output9 = bw + mask9_bw
-output10 = bw + mask10_bw
-output11 = bw + mask11_bw
-output12 = bw + mask12_bw
-output13 = bw + mask13_bw
-output14 = bw + mask14_bw
-output15 = bw + mask15_bw
-output16 = bw + mask16_bw
+output1 = highboostFiltering(bw, mask1_bw, 1)
+output2 = highboostFiltering(bw, mask2_bw, 1)
+output3 = highboostFiltering(bw, mask3_bw, 1)
+output4 = highboostFiltering(bw, mask4_bw, 1)
+output5 = highboostFiltering(bw, mask5_bw, 1)
+output6 = highboostFiltering(bw, mask6_bw, 1)
+output7 = highboostFiltering(bw, mask7_bw, 1)
+output8 = highboostFiltering(bw, mask8_bw, 1)
+output9 = highboostFiltering(bw, mask9_bw, 1)
+output10 = higboostFiltering(bw, mask10_bw, 1)
+output11 = higboostFiltering(bw, mask11_bw, 1)
+output12 = higboostFiltering(bw, mask12_bw, 1)
+output13 = higboostFiltering(bw, mask13_bw, 1)
+output14 = higboostFiltering(bw, mask14_bw, 1)
+output15 = higboostFiltering(bw, mask15_bw, 1)
+output16 = higboostFiltering(bw, mask16_bw, 1)
 
         #OUTPUT FOR RGB IMAGES
-output1 = rgb + mask1_rgb
-output2 = rgb + mask2_rgb
-output3 = rgb + mask3_rgb
-output4 = rgb + mask4_rgb
-output5 = rgb + mask5_rgb
-output6 = rgb + mask6_rgb
-output7 = rgb + mask7_rgb
-output8 = rgb + mask8_rgb
-output9 = rgb + mask9_rgb
-output10 = rgb + mask10_rgb
-output11 = rgb + mask11_rgb
-output12 = rgb + mask12_rgb
-output13 = rgb + mask13_rgb
-output14 = rgb + mask14_rgb
-output15 = rgb + mask15_rgb
-output16 = rgb + mask16_rgb
+output1 = higboostFiltering(rgb, mask1_rgb, 1)
+output2 = higboostFiltering(rgb, mask2_rgb, 1)
+output3 = higboostFiltering(rgb, mask3_rgb, 1)
+output4 = higboostFiltering(rgb, mask4_rgb, 1)
+output5 = higboostFiltering(rgb, mask5_rgb, 1)
+output6 = higboostFiltering(rgb, mask6_rgb, 1)
+output7 = higboostFiltering(rgb, mask7_rgb, 1)
+output8 = higboostFiltering(rgb, mask8_rgb, 1)
+output9 = higboostFiltering(rgb, mask9_rgb, 1)
+output10 = higboostFiltering(rgb, mask10_rgb, 1)
+output11 = higboostFiltering(rgb, mask11_rgb, 1)
+output12 = higboostFiltering(rgb, mask12_rgb, 1)
+output13 = higboostFiltering(rgb, mask13_rgb, 1)
+output14 = higboostFiltering(rgb, mask14_rgb, 1)
+output15 = higboostFiltering(rgb, mask15_rgb, 1)
+output16 = higboostFiltering(rgb, mask16_rgb, 1)
 
 cv.imshow("original", rgb)
 cv.imshow("1", output1)
